@@ -1,0 +1,26 @@
+{
+  "name": "gbubble",
+  "version": "1.0.0",
+  "description": "3d engine",
+  "main": "index.js",
+  "repository": "https://github.com/treeandgrass/gbubble.git",
+  "author": "treeandgrass <mymymymypcy@163.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "html-webpack-plugin": "^4.0.0-beta.11",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.2.0",
+    "ts-loader": "^6.2.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.3",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js --env.production",
+    "dev": "webpack --config webpack.config.js --env.development",
+    "server": "webpack-dev-server --config webpack.config.js --env.development"
+  }
+}
