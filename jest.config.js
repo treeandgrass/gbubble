@@ -1,4 +1,7 @@
 module.exports = {
+    setupFiles: [
+      "./__setups__/canvas.js"
+    ],
     transform: {
       '^.+\\.tsx?$': 'ts-jest',
     },
