@@ -1,15 +1,17 @@
-import { IShader } from "./baseShader";
+import { BaseShader, IShader } from "./baseShader";
+import { KeyShader } from "./keyShader";
 import { LeafShader } from "./leafShader";
 import { Program } from "./program";
 
-export class ContainerShader implements IShader {
+export class ContainerShader extends BaseShader {
     private shaders: IShader[];
-    private program: Program;
 
-    constructor(program: Program, template: string, split: string | RegExp) {
-        this.program = program;
+    constructor(program: Program, template: string, split: string | RegExp, name?: string) {
+        super(program, name);
+
         this.shaders = [];
         this.preBuild(template, split);
+        this.register();
     }
 
     // return full shader string template
@@ -20,12 +22,24 @@ export class ContainerShader implements IShader {
     }
 
     /**
+     * set main shader by type
+     * @param type
+     */
+    public setMainShader(type: string = "v") {
+        this.program.setMainShader(this.uuid, type);
+    }
+
+    /**
      * constructor leaf shader array
      * @param template
      * @param split
      */
     private preBuild(template: string, split: string | RegExp) {
+        let match;
         let re: RegExp;
+        const sliceIndexs: number[] = [];
+        const subShaderKeys: string[] = [];
+
         if (split.constructor === RegExp) {
             split = split as RegExp;
             if (split.flags && split.flags.includes("g")) {
@@ -37,9 +51,6 @@ export class ContainerShader implements IShader {
             re = RegExp(split, "g");
         }
 
-        const sliceIndexs: number[] = [];
-        const subShaderKeys: string[] = [];
-        let match;
         // tslint:disable-next-line: no-conditional-assignment
         while ((match = re.exec(template)) !== null) {
             if (match.length < 2) {
@@ -56,10 +67,11 @@ export class ContainerShader implements IShader {
 
         for (let i = 0, keyIndex = 0; i < sliceIndexs.length; i += 2) {
             const chunk = template.slice(sliceIndexs[i], sliceIndexs[i + 1]);
-            this.shaders.push(new LeafShader(chunk));
+            this.shaders.push(new LeafShader(this.program, chunk));
 
             if (keyIndex < subShaderKeys.length) {
-                this.shaders.push(this.program.enquiry(subShaderKeys[keyIndex]));
+                this.shaders.push(new KeyShader(this.program, subShaderKeys[keyIndex]));
+                keyIndex++;
             }
         }
     }

@@ -1,11 +1,13 @@
-import { Event } from "../events/event";
-import { IShader } from "./baseShader";
+import { BaseShader } from "./baseShader";
+import { Program } from "./program";
 
-export class LeafShader implements IShader {
+export class LeafShader extends BaseShader {
     private template: string;
 
-    constructor(template: string) {
+    constructor(program: Program, template: string, name?: string) {
+        super(program, name);
         this.template = template;
+        this.register();
     }
 
     public build(): string {

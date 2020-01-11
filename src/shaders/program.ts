@@ -5,12 +5,16 @@ import { LeafShader } from "./leafShader";
 export class Program  extends Event {
     private shaderMap: Map<string, Shader>;
     private gl: WebGLRenderingContext;
+    private fragmentEntry: string;
+    private vertexEntry: string;
 
     constructor(gl: WebGLRenderingContext) {
         super();
 
-        this.shaderMap = new Map();
         this.gl  = gl;
+        this.vertexEntry = "";
+        this.fragmentEntry = "";
+        this.shaderMap = new Map();
     }
 
     /**
@@ -18,15 +22,19 @@ export class Program  extends Event {
      * @param vertexEntry
      * @param fragmentEntry
      */
-    public build(vertexEntry: string = "vertexMain", fragmentEntry: string = "fragementMain"): WebGLProgram {
-        const vertexShader: Shader = this.shaderMap.get(vertexEntry) as Shader;
+    public build(vertexEntry?: string, fragmentEntry?: string): WebGLProgram {
+        // update new entry
+        if (vertexEntry) { this.vertexEntry = vertexEntry; }
+        if (fragmentEntry) { this.fragmentEntry = this.fragmentEntry; }
+
+        const vertexShader: Shader = this.shaderMap.get(this.vertexEntry) as Shader;
         if (!vertexShader) {
-            throw new Error(`no entry: ${vertexEntry}`);
+            throw new Error(`no entry: ${this.vertexEntry}`);
         }
 
-        const fragmentShader: Shader = this.shaderMap.get(fragmentEntry) as Shader;
-        if (!fragmentEntry) {
-            throw new Error(`no entry: ${fragmentEntry}`);
+        const fragmentShader: Shader = this.shaderMap.get(this.fragmentEntry) as Shader;
+        if (!fragmentShader) {
+            throw new Error(`no entry: ${this.fragmentEntry}`);
         }
 
         const vertex: string = vertexShader.build();
@@ -82,8 +90,21 @@ export class Program  extends Event {
     public enquiry(shaderKey: string): Shader {
         let shader: Shader = this.shaderMap.get(shaderKey) as Shader;
         if (!shader) {
-            shader = new LeafShader("");
+            shader = new LeafShader(this, "");
         }
         return shader;
+    }
+
+    /**
+     * set main shader
+     * @param name
+     * @param type
+     */
+    public setMainShader(name: string, type: string) {
+        if (type === "v") {
+            this.vertexEntry = name;
+        } else {
+            this.fragmentEntry = name;
+        }
     }
 }
