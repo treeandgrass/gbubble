@@ -1,13 +1,13 @@
 
-type ListenerFn = (params: any) => void;
+export type ListenerFn = (params: any) => void;
 
-interface IListener {
+export interface IListener {
     once: boolean;
     listener: ListenerFn;
 }
 
 
-export default class Event {
+export class Event {
     private events: Map<string, IListener[]>;
 
     constructor() {
@@ -23,7 +23,7 @@ export default class Event {
         if (!this.events.has(eventName)) {
             this.events.set(eventName, []);
         }
-        this.events.get(eventName).push({ listener, once: false });
+        this.events.get(eventName)?.push({ listener, once: false });
     }
 
     /**
@@ -35,7 +35,7 @@ export default class Event {
         if (!this.events.has(eventName)) {
             this.events.set(eventName, []);
         }
-        this.events.get(eventName).push({ listener, once: true });
+        this.events.get(eventName)?.push({ listener, once: true });
     }
 
     /**
@@ -44,9 +44,9 @@ export default class Event {
      * @param params
      */
     public emit(eventName: string, params: any): void {
-        const listeners: IListener[] = this.events.get(eventName);
+        const listeners: IListener[] = this.events.get(eventName) || [];
 
-        if (listeners && listeners.length > 0) {
+        if (listeners.length > 0) {
             const notOnceListeners: IListener[] = [];
 
             listeners.forEach((oneOf: IListener) => {
@@ -66,10 +66,10 @@ export default class Event {
      * @param eventName
      * @param rmListener
      */
-    public del(eventName: string, rmListener: ListenerFn) {
-        const listeners: IListener[] = this.events.get(eventName);
+    public del(eventName: string, rmListener?: ListenerFn) {
+        const listeners: IListener[] = this.events.get(eventName) || [];
 
-        if (!listeners || listeners.length === 0) {
+        if (listeners.length === 0) {
             return;
         }
 
