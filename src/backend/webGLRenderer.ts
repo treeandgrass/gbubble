@@ -14,14 +14,7 @@ export class WebGLRenderer extends Event {
         return buffer;
     }
 
-    public run(gl: WebGLRenderingContext, program: WebGLProgram, buffers: WebGLBuffer) {
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.clearDepth(1.0);
-        gl.enable(gl.DEPTH_TEST);
-        gl.depthFunc(gl.LEQUAL);
-
-        // tslint:disable-next-line: no-bitwise
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    public run(gl: WebGLRenderingContext, program: WebGLProgram, positionBuffer: WebGLBuffer) {
 
         // projection matrix
         const fieldOfView: number = 45 * Math.PI / 180;
@@ -56,13 +49,6 @@ export class WebGLRenderer extends Event {
         const stride: number = 0;
         const offset: number = 0;
 
-        const positions: number[] = [
-            -10.0,  10.0,
-            10.0,  10.0,
-            -10.0, -10.0,
-            10.0, -10.0,
-        ];
-        const positionBuffer: WebGLBuffer = this.createBuffer(gl, positions);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.vertexAttribPointer(vertexLocation, numComponents, type, normalize, stride, offset);

@@ -1,7 +1,10 @@
-import { ContainerShader, createGL, IShader, LeafShader, Program, simpeFsSOurce, simpleVsSource, WebGLRenderer } from "../../src";
+import {
+    ContainerShader, createWebGLRenderingContext, glClear, Program, simpeFsSOurce,
+    simpleVsSource, WebGLRenderer,
+} from "../../src";
 
 const baseRule: string = "#include<([A-z,0-9,.]+)>;";
-const gl: WebGLRenderingContext = createGL("canvas");
+const gl: WebGLRenderingContext = createWebGLRenderingContext("canvas");
 const program: Program = new Program(gl);
 
 const vsShader: ContainerShader = new ContainerShader(program, simpleVsSource, baseRule);
@@ -12,9 +15,27 @@ fsShader.setMainShader("f");
 const webglProgram: WebGLProgram = program.build();
 
 const renderer = new WebGLRenderer();
+const positions: number[] = [
+    -10.0,  10.0,
+    10.0,  10.0,
+    -10.0, -10.0,
+    10.0, -10.0,
+];
+
+const position2: number[] = [
+    -17.0,  10.0,
+    30.0,  5.0,
+    -10.0, -18.0,
+    20.0, -10.0,
+];
+
+const positionBuffer: WebGLBuffer = renderer.createBuffer(gl, positions);
+const positionBuffer2: WebGLBuffer = renderer.createBuffer(gl, position2);
 
 function animation() {
-    renderer.run(gl, webglProgram, []);
+    glClear(gl);
+    renderer.run(gl, webglProgram, positionBuffer);
+    renderer.run(gl, webglProgram, positionBuffer2);
     requestAnimationFrame(animation);
 }
 
