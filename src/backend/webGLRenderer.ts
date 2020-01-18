@@ -67,6 +67,5 @@ export class WebGLRenderer extends Event {
             const vertexCount: number = 4;
             gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
         }
-
     }
 }
