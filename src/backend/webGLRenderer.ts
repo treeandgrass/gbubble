@@ -66,6 +66,7 @@ export class WebGLRenderer extends Event {
 
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.vertexAttribPointer(vertexLocation, numComponents, type, normalize, stride, offset);
+        gl.enableVertexAttribArray(vertexLocation);
 
         gl.useProgram(program);
 
