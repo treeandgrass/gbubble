@@ -10,6 +10,7 @@
     "@types/jest": "^24.0.23",
     "@types/signale": "^1.2.1",
     "html-webpack-plugin": "^4.0.0-beta.11",
+    "http-server": "^0.12.1",
     "jest": "^24.9.0",
     "jest-canvas-mock": "^2.2.0",
     "signale": "^1.4.0",
@@ -26,9 +27,12 @@
     "build": "webpack --config webpack.config.js --env.production",
     "dev": "webpack --config webpack.config.js --env.development",
     "server": "webpack-dev-server --config webpack.config.js --env.development",
-    "test": "jest"
+    "test": "jest",
+    "watch:simple1": "webpack-dev-server --config ./examples/triangle/webpack.config.js --env.production"
   },
   "dependencies": {
+    "@types/gl-matrix": "^2.4.5",
+    "gl-matrix": "^3.1.0",
     "ulid": "^2.3.0"
   }
 }
