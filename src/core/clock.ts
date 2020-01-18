@@ -1,4 +1,4 @@
-class Clock {
+export class Clock {
     private delta: number;
 
     constructor(delta?: number) {
