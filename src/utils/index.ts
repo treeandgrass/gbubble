@@ -1,2 +1,2 @@
 export * from "./uuid";
-export * from "./createGL";
+export * from "./gl";
