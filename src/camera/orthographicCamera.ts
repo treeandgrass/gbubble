@@ -1,15 +1,17 @@
 import { mat4 } from "gl-matrix";
-import { vec3 } from "gl-matrix";
 import { ORTHOGRAPHICAMERA_TYPE } from "../constants";
 import { Camera } from "./camera";
-import { Node } from "../node";
 
-export class orthographicCamera extends Camera {
-    constructor(readonly fovy: number, readonly aspect: number, readonly near: number, readonly far: number) {
-        super(ORTHOGRAPHICAMERA_TYPE);
+export class OrthographicCamera extends Camera {
+    constructor(readonly left: number, readonly right: number, readonly bottom: number, readonly top: number,
+                readonly zNear: number, readonly zFar: number) {
+        super();
+        this.type = ORTHOGRAPHICAMERA_TYPE;
     }
 
     public projectMatrix(): mat4 {
-        return mat4.create();
+        const orthgriphic: mat4 = mat4.create();
+        mat4.ortho(orthgriphic, this.left, this.right, this.bottom, this.top, this.zNear, this.zFar);
+        return orthgriphic;
     }
 }
