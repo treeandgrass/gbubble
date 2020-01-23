@@ -1,19 +1,17 @@
 import { mat4, vec3 } from "gl-matrix";
 import { Camera } from "../camera";
-import { Event } from "../events";
 import { GNode } from "../gnode";
+import {attachVertexBuffer, createBuffer, glClear } from "../utils";
 import { Renderer } from "./renderer";
 
 export class WebGLRenderer extends Renderer {
     private camera: Camera;
-    private node: GNode;
     private program: WebGLProgram;
     private gl: WebGLRenderingContext;
-    constructor(camera: Camera, node: GNode, program: WebGLProgram, gl: WebGLRenderingContext) {
+    constructor(camera: Camera, program: WebGLProgram, gl: WebGLRenderingContext) {
         super();
 
         this.gl  = gl;
-        this.node = node;
         this.camera = camera;
         this.program = program;
     }
