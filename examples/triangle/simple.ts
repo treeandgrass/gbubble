@@ -1,6 +1,6 @@
 import { vec3 } from "gl-matrix";
 import {
-    glClear, GNode, PerspectiveCamera,
+    GNode, PerspectiveCamera,
     SimpleGLRenderer,
 } from "../../src";
 
