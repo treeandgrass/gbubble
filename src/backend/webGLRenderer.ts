@@ -1,6 +1,6 @@
 import { mat4, vec3 } from "gl-matrix";
 import { Camera } from "../camera";
-import { GNode } from "../gnode";
+import { GNode } from "../node";
 import {attachVertexBuffer, createBuffer, glClear } from "../utils";
 import { Renderer } from "./renderer";
 

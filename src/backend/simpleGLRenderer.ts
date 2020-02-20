@@ -1,7 +1,7 @@
 import { mat4 } from "gl-matrix";
 import { Camera } from "../camera";
 import { SHADER_RE } from "../constants";
-import { GNode } from "../gnode";
+import { GNode } from "../node";
 import { ContainerShader, Program, simpeFsSOurce, simpleVsSource } from "../shaders";
 import { attachVertexBuffer, createBuffer, createWebGLRenderingContext, glClear, IVertexConfig , ROOT } from "../utils";
 import { Renderer } from "./renderer";

@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { GNode } from "../gnode";
+import { GNode } from "../node";
 
 export class Camera extends GNode {
     // tslint:disable-next-line: variable-name

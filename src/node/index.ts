@@ -1,1 +1,1 @@
-export * from "./gNode";
+export * from "./GNode";
