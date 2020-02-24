@@ -1,5 +1,7 @@
 import { vec3 } from "gl-matrix";
 import { Geometry } from "./Geometry";
+import { Color } from "../color";
+import  { Texture } from "../textures"; 
 
 interface ISphereConfig {
     loAngleStart?: number;
@@ -9,32 +11,27 @@ interface ISphereConfig {
     loAngleEnd?: number;
     laAngleEnd?: number;
     radius: number;
+    color: Color;
 }
 
 export class SphereGeometry extends Geometry {
     private config: ISphereConfig;
+    private texture?: Texture;
 
     constructor(config: ISphereConfig) {
         super();
 
-        this.config = Object.assign({
-            laAngleEnd: 2 *  Math.PI,
-            laAngleStart: 0,
-            laStepLength: Math.PI / 50,
-            loAngleEnd: Math.PI / 2,
-            loAngleStart: - Math.PI / 2,
-            loStepLength: Math.PI / 100,
-        }, config);
+        this.config = config;
     }
 
     public buildGeometry() {
         const {
-            loAngleStart,
-            laAngleStart,
-            laStepLength,
-            loStepLength,
-            loAngleEnd,
-            laAngleEnd,
+            loAngleStart = - Math.PI / 2,
+            laAngleStart = 0,
+            laStepLength = Math.PI / 50,
+            loStepLength = Math.PI / 100,
+            loAngleEnd = Math.PI / 2,
+            laAngleEnd  = 2 *  Math.PI,
             radius,
         } = this.config;
 
@@ -53,6 +50,12 @@ export class SphereGeometry extends Geometry {
                 const x = xy * Math.cos(laAngle);
                 const y = xy * Math.sin(laAngle);
                 this.pushPoint(vec3.fromValues(x, y, z));
+                
+                if (this.texture) {
+                    this.pushColor(this.texture.interpolateColor(x, y, z));
+                } else {
+                    this.pushColor(this.config.color);
+                }
             }
         }
     }

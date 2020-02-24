@@ -25,7 +25,7 @@ export class GNode extends Event {
         this.children.push(node);
     }
 
-    public render(gl: WebGL2RenderingContext) {
+    public render(gl: WebGLRenderingContext | WebGL2RenderingContext) {
         // extend by child
     }
 }

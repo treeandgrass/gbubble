@@ -1,9 +1,10 @@
 import { mat4 } from "gl-matrix";
 import { Camera } from "../camera";
 import { SHADER_RE } from "../constants";
+import { Griphic } from "../griphic";
 import { GNode } from "../node";
 import { ContainerShader, Program, simpeFsSOurce, simpleVsSource } from "../shaders";
-import { attachVertexBuffer, createBuffer, createWebGLRenderingContext, glClear, IVertexConfig , ROOT } from "../utils";
+import { attachVertexBuffer, createWebGLRenderingContext, glClear, IVertexConfig , ROOT } from "../utils";
 import { Renderer } from "./renderer";
 
 
@@ -18,11 +19,6 @@ export class SimpleGLRenderer extends Renderer {
 
         this.camera = camera;
         this.gNode = gNode;
-    }
-
-    public createBuffer(bindingData: Float32Array) {
-        const gl = this.gl as WebGLRenderingContext;
-        return createBuffer(gl, bindingData, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
     }
 
     public bind(root: ROOT) {
@@ -57,8 +53,12 @@ export class SimpleGLRenderer extends Renderer {
         attachVertexBuffer(gl, program, config);
     }
 
-    public run() {
+    public run(griphic: Griphic) {
         const gl = this.gl as WebGLRenderingContext;
+
+        // render objects
+        griphic.render(gl);
+
         const program: WebGLProgram = this.program as WebGLProgram;
 
         // projection matrix
@@ -84,7 +84,7 @@ export class SimpleGLRenderer extends Renderer {
         {
             // tslint:disable-next-line: no-shadowed-variable
             const offset: number = 0;
-            const vertexCount: number = 4;
+            const vertexCount: number = 3;
             gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
         }
     }
