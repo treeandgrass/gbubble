@@ -18,7 +18,7 @@ const zFar: number = 1000.0;
 const camera: PerspectiveCamera = new PerspectiveCamera(fieldOfView, aspect, zNear, zFar);
 
 // lookat
-const eye: vec3 = vec3.fromValues(50, 50, 100);
+const eye: vec3 = vec3.fromValues(0, 0, 0);
 const target: vec3 = vec3.fromValues(0, 0, 0.1);
 const up: vec3 = vec3.fromValues(2, 3, 4);
 camera.lookAt(eye, target, up);
@@ -29,10 +29,10 @@ const griphic = new Griphic();
 
 // create sphere
 const color = new Color();
-const sphere = new SphereGeometry({ radius: 10, color });
+const sphere = new SphereGeometry({ radius: 100, color });
 griphic.addChild(sphere);
 
-const renderer = new SimpleGLRenderer(camera, griphic);
+const renderer = new SimpleGLRenderer(camera);
 renderer.bind(selector);
 
 function animation() {

@@ -4,21 +4,21 @@ import { SHADER_RE } from "../constants";
 import { Griphic } from "../griphic";
 import { GNode } from "../node";
 import { ContainerShader, Program, simpeFsSOurce, simpleVsSource } from "../shaders";
-import { attachVertexBuffer, createWebGLRenderingContext, glClear, IVertexConfig , ROOT } from "../utils";
+import { createWebGLRenderingContext, glClear, ROOT } from "../utils";
+import { Binding, SimpleGLRendererBinding } from "./binding";
 import { Renderer } from "./renderer";
 
 
 export class SimpleGLRenderer extends Renderer {
     private camera: Camera;
     private program: WebGLProgram | undefined;
-    private gl: WebGLRenderingContext |  undefined;
-    private gNode: GNode;
+    private gl: WebGLRenderingContext | undefined;
+    private binding: Binding | undefined;
 
-    constructor(camera: Camera, gNode: GNode) {
+    constructor(camera: Camera) {
         super();
 
         this.camera = camera;
-        this.gNode = gNode;
     }
 
     public bind(root: ROOT) {
@@ -31,6 +31,7 @@ export class SimpleGLRenderer extends Renderer {
         fsShader.setMainShader("f");
 
         this.program = program.build();
+        this.binding = new SimpleGLRendererBinding(this.gl, this.program);
     }
 
     public clear() {
@@ -38,26 +39,9 @@ export class SimpleGLRenderer extends Renderer {
         glClear(gl);
     }
 
-    public attachPositionBuffer(vertexBuffer: WebGLBuffer) {
-        const gl = this.gl as WebGLRenderingContext;
-        const program: WebGLProgram = this.program as WebGLProgram;
-
-
-        const config: IVertexConfig = {
-            location: "vertex",
-            numComponents: 2,
-            target: gl.ARRAY_BUFFER,
-            vertexBuffer,
-        };
-
-        attachVertexBuffer(gl, program, config);
-    }
 
     public run(griphic: Griphic) {
         const gl = this.gl as WebGLRenderingContext;
-
-        // render objects
-        griphic.render(gl);
 
         const program: WebGLProgram = this.program as WebGLProgram;
 
@@ -80,6 +64,9 @@ export class SimpleGLRenderer extends Renderer {
         gl.uniformMatrix4fv(projectionMatrixLocation, false, projectionMatrix);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
         gl.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
+
+        // render objects
+        griphic.render(gl, this.binding as Binding);
 
         {
             // tslint:disable-next-line: no-shadowed-variable

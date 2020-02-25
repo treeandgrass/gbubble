@@ -1,7 +1,7 @@
 import { vec3 } from "gl-matrix";
-import { Geometry } from "./Geometry";
 import { Color } from "../color";
-import  { Texture } from "../textures"; 
+import { Texture } from "../textures";
+import { Geometry } from "./Geometry";
 
 interface ISphereConfig {
     loAngleStart?: number;
@@ -41,16 +41,16 @@ export class SphereGeometry extends Geometry {
         for (let i = 0; i <  loStepCount; i++) {
             const loAngle = loAngleStart + i * loStepLength;
 
-            const z = radius * Math.cos(loAngle);
-            const xy = radius * Math.sin(loAngle);
+            const y = radius * Math.cos(loAngle);
+            const xz = radius * Math.sin(loAngle);
 
             for (let j = 0; j < laStepCount; j++) {
                 const laAngle = laAngleStart + j * laStepLength;
 
-                const x = xy * Math.cos(laAngle);
-                const y = xy * Math.sin(laAngle);
+                const x = xz * Math.cos(laAngle);
+                const z = xz * Math.sin(laAngle);
                 this.pushPoint(vec3.fromValues(x, y, z));
-                
+
                 if (this.texture) {
                     this.pushColor(this.texture.interpolateColor(x, y, z));
                 } else {

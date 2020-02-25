@@ -4,8 +4,8 @@ export type ColorType = string | vec3;
 
 export class Color {
     private color: ColorType;
-    constructor(color: ColorType = vec3.fromValues(1.0, 1.0, 1.0)) {
-        this.color = color || vec3.fromValues(1.0, 1.0, 1.0);
+    constructor(color: ColorType = vec3.fromValues(0.5, 0.3, 1.0)) {
+        this.color = color;
     }
 
     public toRGB(): vec3 {
