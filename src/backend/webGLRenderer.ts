@@ -1,7 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
 import { Camera } from "../camera";
-import { GNode } from "../gnode";
-import {attachVertexBuffer, createBuffer, glClear } from "../utils";
 import { Renderer } from "./renderer";
 
 export class WebGLRenderer extends Renderer {
@@ -14,28 +12,6 @@ export class WebGLRenderer extends Renderer {
         this.gl  = gl;
         this.camera = camera;
         this.program = program;
-    }
-
-    public createBuffer(bindingData: Float32Array) {
-        const buffer: WebGLBuffer = this.gl.createBuffer() as WebGLBuffer;
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, bindingData, this.gl.STATIC_DRAW);
-        return buffer;
-    }
-
-    public attachPositionBuffer(positionBuffer: WebGLBuffer) {
-        const vertexLocation: number = this.gl.getAttribLocation(this.program, "vertex");
-
-        const numComponents: number = 2;
-        const type: number = this.gl.FLOAT;
-        const normalize: boolean = false;
-        const stride: number = 0;
-        const offset: number = 0;
-
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
-        this.gl.vertexAttribPointer(vertexLocation, numComponents, type, normalize, stride, offset);
-        this.gl.enableVertexAttribArray(vertexLocation);
     }
 
     public run() {

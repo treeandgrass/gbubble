@@ -1,28 +1,24 @@
 import { mat4 } from "gl-matrix";
 import { Camera } from "../camera";
 import { SHADER_RE } from "../constants";
-import { GNode } from "../gnode";
+import { Griphic } from "../griphic";
+import { GNode } from "../node";
 import { ContainerShader, Program, simpeFsSOurce, simpleVsSource } from "../shaders";
-import { attachVertexBuffer, createBuffer, createWebGLRenderingContext, glClear, IVertexConfig , ROOT } from "../utils";
+import { createWebGLRenderingContext, glClear, ROOT } from "../utils";
+import { Binding, SimpleGLRendererBinding } from "./binding";
 import { Renderer } from "./renderer";
 
 
 export class SimpleGLRenderer extends Renderer {
     private camera: Camera;
     private program: WebGLProgram | undefined;
-    private gl: WebGLRenderingContext |  undefined;
-    private gNode: GNode;
+    private gl: WebGLRenderingContext | undefined;
+    private binding: Binding | undefined;
 
-    constructor(camera: Camera, gNode: GNode) {
+    constructor(camera: Camera) {
         super();
 
         this.camera = camera;
-        this.gNode = gNode;
-    }
-
-    public createBuffer(bindingData: Float32Array) {
-        const gl = this.gl as WebGLRenderingContext;
-        return createBuffer(gl, bindingData, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
     }
 
     public bind(root: ROOT) {
@@ -35,6 +31,7 @@ export class SimpleGLRenderer extends Renderer {
         fsShader.setMainShader("f");
 
         this.program = program.build();
+        this.binding = new SimpleGLRendererBinding(this.gl, this.program);
     }
 
     public clear() {
@@ -42,23 +39,10 @@ export class SimpleGLRenderer extends Renderer {
         glClear(gl);
     }
 
-    public attachPositionBuffer(vertexBuffer: WebGLBuffer) {
+
+    public run(griphic: Griphic) {
         const gl = this.gl as WebGLRenderingContext;
-        const program: WebGLProgram = this.program as WebGLProgram;
 
-
-        const config: IVertexConfig = {
-            location: "vertex",
-            numComponents: 2,
-            target: gl.ARRAY_BUFFER,
-            vertexBuffer,
-        };
-
-        attachVertexBuffer(gl, program, config);
-    }
-
-    public run() {
-        const gl = this.gl as WebGLRenderingContext;
         const program: WebGLProgram = this.program as WebGLProgram;
 
         // projection matrix
@@ -81,10 +65,13 @@ export class SimpleGLRenderer extends Renderer {
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
         gl.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
 
+        // render objects
+        griphic.render(gl, this.binding as Binding);
+
         {
             // tslint:disable-next-line: no-shadowed-variable
             const offset: number = 0;
-            const vertexCount: number = 4;
+            const vertexCount: number = 3;
             gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
         }
     }

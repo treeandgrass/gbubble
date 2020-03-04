@@ -1,7 +1,7 @@
 export interface IVertexConfig {
     numComponents: number;
     target: number;
-    vertexBuffer: WebGLBuffer;
+    buffer: WebGLBuffer;
     location: string;
 }
 
@@ -50,13 +50,13 @@ export function createBuffer(gl: WebGLRenderingContext, binding: Float32Array, t
     return buffer;
 }
 
-export function attachVertexBuffer(gl: WebGLRenderingContext, program: WebGLProgram, config: IVertexConfig) {
-    const vertexLocation: number = gl.getAttribLocation(program, config.location);
-    const { vertexBuffer, numComponents } = config;
+export function attachBuffer(gl: WebGLRenderingContext, program: WebGLProgram, config: IVertexConfig) {
+    const location: number = gl.getAttribLocation(program, config.location);
+    const { buffer, numComponents } = config;
     // bindings
-    gl.bindBuffer(config.target, vertexBuffer);
-    gl.vertexAttribPointer(vertexLocation, numComponents, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(vertexLocation);
+    gl.bindBuffer(config.target, buffer);
+    gl.vertexAttribPointer(location, numComponents, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(location);
 }
 
 // fetch all attributelocations

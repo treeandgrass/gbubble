@@ -1,7 +1,10 @@
 import { vec3 } from "gl-matrix";
 import {
-    glClear, GNode, PerspectiveCamera,
+    Color,
+    Griphic,
+    PerspectiveCamera,
     SimpleGLRenderer,
+    SphereGeometry,
 } from "../../src";
 
 const selector: string = "#canvas";
@@ -15,43 +18,25 @@ const zFar: number = 1000.0;
 const camera: PerspectiveCamera = new PerspectiveCamera(fieldOfView, aspect, zNear, zFar);
 
 // lookat
-const eye: vec3 = vec3.fromValues(50, 50, 100);
+const eye: vec3 = vec3.fromValues(0, 0, 0);
 const target: vec3 = vec3.fromValues(0, 0, 0.1);
 const up: vec3 = vec3.fromValues(2, 3, 4);
 camera.lookAt(eye, target, up);
 
 
 
-const gNode: GNode = new GNode();
-const renderer = new SimpleGLRenderer(camera, gNode);
+const griphic = new Griphic();
+
+// create sphere
+const color = new Color();
+const sphere = new SphereGeometry({ radius: 100, color });
+griphic.addChild(sphere);
+
+const renderer = new SimpleGLRenderer(camera);
 renderer.bind(selector);
 
-
-const vertex1: number[] = [
-    -10.0,  10.0,
-    10.0,  10.0,
-    -10.0, -10.0,
-    10.0, -10.0,
-];
-const vertex2: number[] = [
-    -17.0,  10.0,
-    30.0,  5.0,
-    -10.0, -18.0,
-    20.0, -10.0,
-];
-
-const position1 = new Float32Array(vertex1);
-const position2 = new Float32Array(vertex2);
-const positionBuffer1: WebGLBuffer = renderer.createBuffer(position1);
-const positionBuffer2: WebGLBuffer = renderer.createBuffer(position2);
-
 function animation() {
-    renderer.clear();
-    renderer.attachPositionBuffer(positionBuffer1);
-    renderer.run();
-    renderer.attachPositionBuffer(positionBuffer2);
-    renderer.run();
-
+    renderer.run(griphic);
     requestAnimationFrame(animation);
 }
 
