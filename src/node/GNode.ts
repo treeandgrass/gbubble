@@ -41,11 +41,11 @@ export class GNode extends Event {
 
     private lookAt(): mat4 {
         const out: mat4 = mat4.create();
-        const eye: vec3 = this.position.toVector();
-        const target: vec3 = vec3.fromValues(0, 0, 0);
-        const up: vec3 = vec3.fromValues(0, 1, 0);
-        mat4.lookAt(out, eye, target, up);
-        mat4.invert(out, out);
+        out[12] = this.position.x;
+        out[13] = this.position.y;
+        out[14] = this.position.z;
+        out[15] = 1;
+
         return out;
     }
 
