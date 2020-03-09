@@ -1,15 +1,23 @@
-import { mat4, vec3 } from "gl-matrix";
+import { mat4, quat, vec3 } from "gl-matrix";
 import { Binding } from "../backend/binding";
 import { NODE_TYPE } from "../constants";
 import { Event } from "../events";
+import { Euler } from "../math/Euler";
+import { setFromEuler } from "../math/Quaternion";
 import { uuid } from "../utils";
-import { Position } from "./position";
+import { Position } from "./Position";
 
 export class GNode extends Event {
     public uuid: string;
     public type: string;
     public children: GNode[];
     public position: Position;
+    public rotation: Euler;
+    public scale: vec3;
+    // tslint:disable-next-line: variable-name
+    public _worldMatrix: mat4;
+    public shouldUpdateWorldMatrix: boolean;
+
 
     constructor() {
         super();
@@ -18,6 +26,10 @@ export class GNode extends Event {
         this.uuid = uuid();
         this.children = [];
         this.position = new Position();
+        this.rotation = new Euler();
+        this.scale = vec3.create();
+        this._worldMatrix = mat4.create();
+        this.shouldUpdateWorldMatrix = true;
     }
 
     public addChild(node: GNode)  {
@@ -39,17 +51,26 @@ export class GNode extends Event {
         this.position.z = z;
     }
 
-    private lookAt(): mat4 {
+    public updateWorldMatrix(): mat4 {
         const out: mat4 = mat4.create();
-        out[12] = this.position.x;
-        out[13] = this.position.y;
-        out[14] = this.position.z;
-        out[15] = 1;
+        // quaternion
+        const q: quat = quat.create();
+        setFromEuler(q, this.rotation);
+        // position
+        const p: vec3 = this.position.toVector();
+
+        // make rotation form quaternion,roatation,scale
+        mat4.fromRotationTranslationScale(out, q, p, this.scale);
 
         return out;
     }
 
     public get worldMatrix() {
-        return this.lookAt();
+        if (this.shouldUpdateWorldMatrix) {
+            this._worldMatrix = this.updateWorldMatrix();
+            this.shouldUpdateWorldMatrix = false;
+        }
+
+        return this._worldMatrix;
     }
 }
