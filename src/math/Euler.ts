@@ -1,27 +1,21 @@
-import { mat4 } from "gl-matrix";
+import { mat4, quat } from "gl-matrix";
 import { clamp } from "./math";
-import { Quaternion } from "./Quaternion";
-import { OnChangeCallback } from "./type";
 
+// Euler angle
 export class Euler {
     public x: number;
     public y: number;
     public z: number;
     public order: string;
-    public onChangeCallback: OnChangeCallback;
 
     constructor(x: number, y: number, z: number, order: string) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.order = order;
-
-        this.onChangeCallback = () => {
-            // do nothing
-        };
     }
 
-    public setFromRotationMatrix( m: mat4, order: string, update: boolean ) {
+    public setFromRotationMatrix( m: mat4, order: string) {
 
         const te = mat4.create();
         mat4.transpose(te, m);
@@ -138,18 +132,11 @@ export class Euler {
         }
 
         this.order = order;
-
-        if ( update !== false ) {
-            this.onChangeCallback();
-        }
-
     }
 
-    // public setFromQuaternion( q: Quaternion, order, update ) {
-
-    //     mat4.makeRotationFromQuaternion( q );
-
-    //     return this.setFromRotationMatrix( matrix, order, update );
-
-    // }
+    public setFromQuaternion( q: quat, order: string) {
+        const matrix = mat4.create();
+        mat4.fromQuat(matrix, q);
+        return this.setFromRotationMatrix( matrix, order);
+    }
 }
