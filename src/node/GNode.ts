@@ -4,8 +4,10 @@ import { NODE_TYPE } from "../constants";
 import { Event } from "../events";
 import { Euler } from "../math/Euler";
 import { setFromEuler } from "../math/Quaternion";
+import { IRenderingContext } from "../types";
 import { uuid } from "../utils";
 import { Position } from "./Position";
+import { Scale } from "./Scale";
 
 export class GNode extends Event {
     public uuid: string;
@@ -13,7 +15,7 @@ export class GNode extends Event {
     public children: GNode[];
     public position: Position;
     public rotation: Euler;
-    public scale: vec3;
+    public scale: Scale;
     // tslint:disable-next-line: variable-name
     public _worldMatrix: mat4;
     public shouldUpdateWorldMatrix: boolean;
@@ -27,7 +29,7 @@ export class GNode extends Event {
         this.children = [];
         this.position = new Position();
         this.rotation = new Euler();
-        this.scale = vec3.create();
+        this.scale = new Scale();
         this._worldMatrix = mat4.create();
         this.shouldUpdateWorldMatrix = true;
     }
@@ -40,7 +42,7 @@ export class GNode extends Event {
         this.children.push(node);
     }
 
-    public render(gl: WebGLRenderingContext | WebGL2RenderingContext, binding: Binding) {
+    public render(context: IRenderingContext, binding: Binding) {
         // extend by child
     }
 
@@ -53,14 +55,16 @@ export class GNode extends Event {
 
     public updateWorldMatrix(): mat4 {
         const out: mat4 = mat4.create();
-        // quaternion
+        mat4.identity(out);
+
         const q: quat = quat.create();
         setFromEuler(q, this.rotation);
-        // position
+
         const p: vec3 = this.position.toVector();
 
-        // make rotation form quaternion,roatation,scale
-        mat4.fromRotationTranslationScale(out, q, p, this.scale);
+        const s: vec3 = this.scale.toVector();
+
+        mat4.fromRotationTranslationScale(out, q, p, s);
 
         return out;
     }

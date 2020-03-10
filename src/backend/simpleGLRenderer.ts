@@ -2,8 +2,8 @@ import { mat4 } from "gl-matrix";
 import { Camera } from "../camera";
 import { SHADER_RE } from "../constants";
 import { Griphic } from "../griphic";
-import { GNode } from "../node";
 import { ContainerShader, Program, simpeFsSOurce, simpleVsSource } from "../shaders";
+import { IRenderingContext } from "../types";
 import { createWebGLRenderingContext, glClear, ROOT } from "../utils";
 import { Binding, SimpleGLRendererBinding } from "./binding";
 import { Renderer } from "./renderer";
@@ -49,30 +49,20 @@ export class SimpleGLRenderer extends Renderer {
         const projectionMatrix: mat4 = this.camera.projectMatrix();
         // view matrix
         const viewMatrix: mat4 = this.camera.viewMatrix();
-        const modelMatrix: mat4 = mat4.create();
 
         const projectionMatrixLocation: WebGLUniformLocation =
             gl.getUniformLocation(program, "projectionMatrix") as WebGLUniformLocation;
         const viewMatrixLocation: WebGLUniformLocation =
             gl.getUniformLocation(program, "viewMatrix") as WebGLUniformLocation;
-        const modelMatrixLocation: WebGLUniformLocation =
-            gl.getUniformLocation(program, "modelMatrix") as WebGLUniformLocation;
 
         gl.useProgram(program);
 
         // use shader uniform
         gl.uniformMatrix4fv(projectionMatrixLocation, false, projectionMatrix);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
-        gl.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
 
         // render objects
-        griphic.render(gl, this.binding as Binding);
-
-        {
-            // tslint:disable-next-line: no-shadowed-variable
-            const offset: number = 0;
-            const vertexCount: number = 3;
-            gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
-        }
+        const context: IRenderingContext = { gl, program };
+        griphic.render(context, this.binding as Binding);
     }
 }

@@ -30,6 +30,10 @@ const griphic = new Griphic();
 // create sphere
 const color = new Color();
 const sphere = new SphereGeometry({ radius: 100, color });
+sphere.position.x = 5;
+sphere.position.y = 5;
+sphere.position.z = 5;
+
 griphic.addChild(sphere);
 
 const renderer = new SimpleGLRenderer(camera);

@@ -1,10 +1,11 @@
 import { Binding } from "src/backend/binding";
 import { GNode } from "../node/GNode";
+import { IRenderingContext } from "../types";
 
 export class Griphic extends GNode {
-    public  render(gl: WebGLRenderingContext | WebGL2RenderingContext,  binding: Binding) {
+    public  render( context: IRenderingContext,  binding: Binding) {
         this.children.forEach((child) => {
-            child.render(gl, binding);
+            child.render(context, binding);
         });
     }
 }

@@ -1,8 +1,9 @@
-import { vec3 } from "gl-matrix";
+import { mat4, vec3 } from "gl-matrix";
 import { Binding } from "../backend/binding";
 import { Color } from "../color";
 import { GNode } from "../node/GNode";
 import { Typed, TypedArray } from "../types";
+import { IRenderingContext } from "../types";
 
 export class Geometry extends GNode {
     private vertexs: vec3[];
@@ -15,10 +16,20 @@ export class Geometry extends GNode {
         this.colors = [];
     }
 
-    public render(gl: WebGLRenderingContext | WebGL2RenderingContext, binding: Binding) {
+    public render(context: IRenderingContext, binding: Binding) {
+        const { gl, program } = context;
+
+        // updalod worldMatrix
+        const worldMatrix: mat4 = this.worldMatrix;
+        // const worldMatrix: mat4 = mat4.create();
+        // mat4.identity(worldMatrix);
+
+        const modelMatrixLocation: WebGLUniformLocation =
+            gl.getUniformLocation(program, "modelMatrix") as WebGLUniformLocation;
+        gl.uniformMatrix4fv(modelMatrixLocation, false, worldMatrix);
+
         // build geometry
         this.buildGeometry();
-
         // binding vertexs
         const positionBuffer = gl.createBuffer();
         // const pointData = new Float32Array([
@@ -39,6 +50,10 @@ export class Geometry extends GNode {
         gl.bufferData(gl.ARRAY_BUFFER, colorData, gl.STATIC_DRAW);
 
         binding.attachColorBuffer(colorBuffer as WebGLBuffer);
+
+        const offset: number = 0;
+        const vertexCount: number = 3;
+        gl.drawArrays(gl.TRIANGLES, offset, vertexCount);
     }
 
     public setColors(colors: Color[]) {

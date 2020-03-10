@@ -16,3 +16,8 @@ export type Typed = int8 | uint8 | ucint8
 export type TypedArray = Int8Array | Uint8Array | Uint8ClampedArray
     | Int16Array | Uint16Array | Int32Array | Int32Array
     | Float32Array | Float64Array;
+
+export interface IRenderingContext {
+    gl: WebGL2RenderingContext | WebGLRenderingContext;
+    program: WebGLProgram;
+}
