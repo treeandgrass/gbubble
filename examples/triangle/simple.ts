@@ -16,14 +16,11 @@ const zNear: number = 0.1;
 const zFar: number = 1000.0;
 
 const camera: PerspectiveCamera = new PerspectiveCamera(fieldOfView, aspect, zNear, zFar);
-
-// lookat
-const eye: vec3 = vec3.fromValues(0, 0, 0);
-const target: vec3 = vec3.fromValues(0, 0, 0.1);
-const up: vec3 = vec3.fromValues(2, 3, 4);
-camera.lookAt(eye, target, up);
-
-
+camera.position.x = 10;
+camera.position.y = 3;
+camera.position.z = 20;
+camera.up.y = 1;
+camera.center.z = 0.1;
 
 const griphic = new Griphic();
 
