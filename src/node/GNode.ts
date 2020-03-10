@@ -6,16 +6,15 @@ import { Euler } from "../math/Euler";
 import { setFromEuler } from "../math/Quaternion";
 import { IRenderingContext } from "../types";
 import { uuid } from "../utils";
-import { Position } from "./Position";
-import { Scale } from "./Scale";
+import { Vector } from "./Position";
 
 export class GNode extends Event {
     public uuid: string;
     public type: string;
     public children: GNode[];
-    public position: Position;
+    public position: Vector;
     public rotation: Euler;
-    public scale: Scale;
+    public scale: Vector;
     // tslint:disable-next-line: variable-name
     public _worldMatrix: mat4;
     public shouldUpdateWorldMatrix: boolean;
@@ -27,9 +26,9 @@ export class GNode extends Event {
         this.type = NODE_TYPE;
         this.uuid = uuid();
         this.children = [];
-        this.position = new Position();
+        this.position = new Vector();
         this.rotation = new Euler();
-        this.scale = new Scale();
+        this.scale = new Vector();
         this._worldMatrix = mat4.create();
         this.shouldUpdateWorldMatrix = true;
     }
