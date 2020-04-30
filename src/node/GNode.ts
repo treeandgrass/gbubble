@@ -54,15 +54,11 @@ export class GNode extends Event {
 
     public updateWorldMatrix(): mat4 {
         const out: mat4 = mat4.create();
-        mat4.identity(out);
 
         const q: quat = quat.create();
         setFromEuler(q, this.rotation);
-
         const p: vec3 = this.position.toVector();
-
         const s: vec3 = this.scale.toVector();
-
         mat4.fromRotationTranslationScale(out, q, p, s);
 
         return out;

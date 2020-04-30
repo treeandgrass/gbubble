@@ -16,7 +16,6 @@ export class Camera extends GNode {
 
     public lookAt(eye: vec3, center: vec3, up: vec3) {
         const view: mat4 = mat4.create();
-        mat4.identity(view);
         mat4.lookAt(view, eye, center, up);
         return view;
     }

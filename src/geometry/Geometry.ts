@@ -20,9 +20,9 @@ export class Geometry extends GNode {
         const { gl, program } = context;
 
         // updalod worldMatrix
-        const worldMatrix: mat4 = this.worldMatrix;
-        // const worldMatrix: mat4 = mat4.create();
-        // mat4.identity(worldMatrix);
+        // const worldMatrix: mat4 = this.worldMatrix;
+        const worldMatrix: mat4 = mat4.create();
+        mat4.identity(worldMatrix);
 
         const modelMatrixLocation: WebGLUniformLocation =
             gl.getUniformLocation(program, "modelMatrix") as WebGLUniformLocation;
@@ -32,12 +32,12 @@ export class Geometry extends GNode {
         this.buildGeometry();
         // binding vertexs
         const positionBuffer = gl.createBuffer();
-        // const pointData = new Float32Array([
-        //     -1.0,  1.0, 1.0,
-        //      1.0,  1.0, 1.0,
-        //     -1.0, -1.0, 1.0,
-        //   ]);
-        const pointData = this.flatPoints(this.vertexs, Float32Array);
+        const pointData = new Float32Array([
+            -1.0,  1.0, 1.0,
+             1.0,  1.0, 1.0,
+            -1.0, -1.0, 1.0,
+          ]);
+        // const pointData = this.flatPoints(this.vertexs, Float32Array);
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, pointData, gl.STATIC_DRAW);
 

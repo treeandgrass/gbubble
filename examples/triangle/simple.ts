@@ -17,7 +17,7 @@ const zFar: number = 1000.0;
 
 const camera: PerspectiveCamera = new PerspectiveCamera(fieldOfView, aspect, zNear, zFar);
 camera.position.x = 10;
-camera.position.y = 3;
+camera.position.y = -10;
 camera.position.z = 20;
 camera.up.y = 1;
 camera.center.z = 0.1;
