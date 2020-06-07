@@ -8,12 +8,14 @@ import { IRenderingContext } from "../types";
 export class Geometry extends GNode {
     private vertexs: vec3[];
     private colors: Color[];
+    private indices: number[];
 
     constructor() {
         super();
 
         this.vertexs = [];
         this.colors = [];
+        this.indices = [];
     }
 
     public render(context: IRenderingContext, binding: Binding) {
@@ -28,9 +30,7 @@ export class Geometry extends GNode {
             gl.getUniformLocation(program, "modelMatrix") as WebGLUniformLocation;
         gl.uniformMatrix4fv(modelMatrixLocation, false, worldMatrix);
 
-        // build geometry
-        this.buildGeometry();
-        // binding vertexs
+        // binding vertex
         const positionBuffer = gl.createBuffer();
         const pointData = this.flatPoints(this.vertexs, Float32Array);
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -47,8 +47,13 @@ export class Geometry extends GNode {
         binding.attachColorBuffer(colorBuffer as WebGLBuffer);
 
         const offset: number = 0;
-        const vertexCount: number = 3;
-        gl.drawArrays(gl.TRIANGLES, offset, vertexCount);
+        const count: number = this.indices.length;
+        gl.drawArrays(gl.TRIANGLES, offset, count);
+    }
+
+    public clear() {
+      this.vertexs = [];
+      this.colors  = [];
     }
 
     public setColors(colors: Color[]) {
@@ -77,6 +82,10 @@ export class Geometry extends GNode {
 
     public getVertexs(): vec3[] {
         return this.vertexs;
+    }
+
+    public pushIndices(indices: number[]): void {
+      this.indices.push(...indices);
     }
 
     public flatPoints(points: vec3[], Type: Typed): TypedArray {

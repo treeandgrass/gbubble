@@ -6,12 +6,12 @@ import { Geometry } from "./Geometry";
 interface ISphereConfig {
     loAngleStart?: number;
     laAngleStart?: number;
-    laStepLength?: number;
-    loStepLength?: number;
-    loAngleEnd?: number;
-    laAngleEnd?: number;
+    laStep?: number;
+    loStep?: number;
     radius: number;
     color: Color;
+    loLength?: number;
+    laLength?: number;
 }
 
 export class SphereGeometry extends Geometry {
@@ -22,30 +22,34 @@ export class SphereGeometry extends Geometry {
         super();
 
         this.config = config;
+
+        this.buildGeometry();
     }
 
     public buildGeometry() {
         const {
-            loAngleStart = - Math.PI / 2,
+            loAngleStart = 0,
             laAngleStart = 0,
-            laStepLength = Math.PI / 50,
-            loStepLength = Math.PI / 100,
-            loAngleEnd = Math.PI / 2,
-            laAngleEnd  = 2 *  Math.PI,
+            laStep = 32,
+            loStep = 32,
             radius,
         } = this.config;
 
-        const laStepCount = (laAngleEnd - laAngleStart) / laStepLength;
-        const loStepCount = (loAngleEnd - loAngleStart) / loStepLength;
+        // clear old data
+        const loLength = this.config.loLength !== undefined ? this.config.loLength : Math.PI;
+        const laLength  = this.config.laLength !== undefined ? this.config.laLength : Math.PI * 2;
 
-        for (let i = 0; i <  loStepCount; i++) {
-            const loAngle = loAngleStart + i * loStepLength;
+        const grid: number[][] = [];
+        let index: number  = 0;
+        for (let i = 0; i <=  loStep; i++) {
+            const loAngle = loAngleStart + (i / loStep) * Math.PI;
 
             const y = radius * Math.cos(loAngle);
             const xz = radius * Math.sin(loAngle);
 
-            for (let j = 0; j < laStepCount; j++) {
-                const laAngle = laAngleStart + j * laStepLength;
+            const vertexsRow: number[] = [];
+            for (let j = 0; j <= laStep; j++) {
+                const laAngle = laAngleStart + j / laStep * 2 * Math.PI;
 
                 const x = xz * Math.cos(laAngle);
                 const z = xz * Math.sin(laAngle);
@@ -56,7 +60,25 @@ export class SphereGeometry extends Geometry {
                 } else {
                     this.pushColor(this.config.color);
                 }
+                vertexsRow.push(index++);
             }
+            grid.push(vertexsRow);
+        }
+
+        for ( let iy = 0; iy < loStep; iy ++ ) {
+
+          for ( let ix = 0; ix < laStep; ix ++ ) {
+            const a = grid[ iy ][ ix + 1 ];
+            const b = grid[ iy ][ ix ];
+            const c = grid[ iy + 1 ][ ix ];
+            const d = grid[ iy + 1 ][ ix + 1 ];
+            if ( iy !== 0 || loAngleStart > 0 ) {
+              this.pushIndices([a, b, d]);
+            }
+            if ( iy !==  loStep - 1 || loLength < Math.PI ) {
+              this.pushIndices([b, c, d]);
+            }
+          }
         }
     }
 }
