@@ -1,8 +1,8 @@
 import { mat4 } from "gl-matrix";
 import { Camera } from "../camera";
 import { SHADER_RE } from "../constants";
-import { Griphic } from "../griphic";
-import { ContainerShader, Program, simpeFsSOurce, simpleVsSource } from "../shaders";
+import { Graphic } from "../graphic";
+import { ContainerShader, Program, simpeFsSource, simpleVsSource } from "../shaders";
 import { IRenderingContext } from "../types";
 import { createWebGLRenderingContext, glClear, ROOT } from "../utils";
 import { Binding, SimpleGLRendererBinding } from "./binding";
@@ -27,7 +27,7 @@ export class SimpleGLRenderer extends Renderer {
         const program: Program = new Program(this.gl);
         const vsShader: ContainerShader = new ContainerShader(program, simpleVsSource, SHADER_RE);
         vsShader.setMainShader();
-        const fsShader: ContainerShader = new ContainerShader(program, simpeFsSOurce, SHADER_RE);
+        const fsShader: ContainerShader = new ContainerShader(program, simpeFsSource, SHADER_RE);
         fsShader.setMainShader("f");
 
         this.program = program.build();
@@ -40,7 +40,7 @@ export class SimpleGLRenderer extends Renderer {
     }
 
 
-    public run(griphic: Griphic) {
+    public run(graphic: Graphic) {
         const gl = this.gl as WebGLRenderingContext;
 
         const program: WebGLProgram = this.program as WebGLProgram;
@@ -63,6 +63,6 @@ export class SimpleGLRenderer extends Renderer {
 
         // render objects
         const context: IRenderingContext = { gl, program };
-        griphic.render(context, this.binding as Binding);
+        graphic.render(context, this.binding as Binding);
     }
 }

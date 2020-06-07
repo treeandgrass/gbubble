@@ -6,7 +6,7 @@ export * from "./node";
 export * from "./constants";
 export * from "./camera";
 export * from "./geometry";
-export * from "./griphic";
+export * from "./graphic";
 export * from "./color";
 export * from "./textures";
 

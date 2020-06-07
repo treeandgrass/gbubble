@@ -1,7 +1,6 @@
-import { vec3 } from "gl-matrix";
 import {
     Color,
-    Griphic,
+    Graphic,
     PerspectiveCamera,
     SimpleGLRenderer,
     SphereGeometry,
@@ -22,7 +21,7 @@ camera.position.z = 20;
 camera.up.y = 1;
 camera.center.z = 0.1;
 
-const griphic = new Griphic();
+const graphic = new Graphic();
 
 // create sphere
 const color = new Color();
@@ -31,13 +30,13 @@ sphere.position.x = 5;
 sphere.position.y = 5;
 sphere.position.z = 5;
 
-griphic.addChild(sphere);
+graphic.addChild(sphere);
 
 const renderer = new SimpleGLRenderer(camera);
 renderer.bind(selector);
 
 function animation() {
-    renderer.run(griphic);
+    renderer.run(graphic);
     requestAnimationFrame(animation);
 }
 

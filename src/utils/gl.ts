@@ -10,7 +10,6 @@ export interface IBindingConfig {
     target: number;
     vertexBuffer: WebGLBuffer;
 }
-
 export type ROOT = string | HTMLCanvasElement | WebGLRenderingContext;
 
 
