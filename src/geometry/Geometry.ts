@@ -32,7 +32,7 @@ export class Geometry extends GNode {
 
         // binding vertex
         const positionBuffer = gl.createBuffer();
-        const pointData = this.flatPoints(this.vertexs, Float32Array);
+        const pointData = this.geometric(Float32Array);
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, pointData, gl.STATIC_DRAW);
 
@@ -41,19 +41,18 @@ export class Geometry extends GNode {
         // bind colors
         const colorBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        const colorData = this.flatColors(this.colors, Float32Array);
+        const colorData = this.generateColors(Float32Array);
         gl.bufferData(gl.ARRAY_BUFFER, colorData, gl.STATIC_DRAW);
 
         binding.attachColorBuffer(colorBuffer as WebGLBuffer);
 
         const offset: number = 0;
-        const count: number = this.indices.length;
-        gl.drawArrays(gl.TRIANGLES, offset, count);
+        gl.drawArrays(gl.TRIANGLES, offset, this.indices.length);
     }
 
     public clear() {
-      this.vertexs = [];
-      this.colors  = [];
+        this.vertexs = [];
+        this.colors  = [];
     }
 
     public setColors(colors: Color[]) {
@@ -84,25 +83,34 @@ export class Geometry extends GNode {
         return this.vertexs;
     }
 
+    public getIndices(): number[] {
+        return this.indices;
+    }
+
     public pushIndices(indices: number[]): void {
-      this.indices.push(...indices);
+        this.indices.push(...indices);
     }
 
-    public flatPoints(points: vec3[], Type: Typed): TypedArray {
-        const cords = points.reduce((acc: number[], vertex: vec3) => {
-            vertex.forEach((i: number) => acc.push(i));
-            return acc;
-        }, []);
+    public geometric(Type: Typed): TypedArray {
+        const vertexs: vec3[] =  this.getVertexs();
+        const newVertexs: number[] =  [];
+        this.getIndices().forEach((index: number) => {
+          vertexs[index].forEach((i: number) => {
+            newVertexs.push(i);
+          });
+        });
 
-        return  new Type(cords);
+        return  new Type(newVertexs);
     }
 
-    public flatColors(colors: Color[], Type: Typed): TypedArray {
-        const cords = colors.reduce((acc: number[], color: Color) => {
-            color.toRGB().forEach((i: number) => acc.push(i));
-            return acc;
-        }, []);
-
-        return  new Type(cords);
+    public generateColors(Type: Typed): TypedArray {
+        const newColors: number[] = [];
+        this.indices.forEach((index: number) => {
+            this.colors[index].toRGB().forEach((i: number) => {
+                newColors.push(i);
+            });
+        });
+        return  new Type(newColors);
     }
+
 }

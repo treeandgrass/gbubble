@@ -1,6 +1,7 @@
 import { vec3 } from "gl-matrix";
 import { Color } from "../color";
 import { Texture } from "../textures";
+import { Typed, TypedArray } from "../types";
 import { Geometry } from "./Geometry";
 
 interface ISphereConfig {
