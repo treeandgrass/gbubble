@@ -1,32 +1,38 @@
-import { vec3 } from "gl-matrix";
+import { mat4, vec3 } from "gl-matrix";
 import { Binding } from "../backend/binding";
 import { Color } from "../color";
 import { GNode } from "../node/GNode";
 import { Typed, TypedArray } from "../types";
+import { IRenderingContext } from "../types";
 
 export class Geometry extends GNode {
     private vertexs: vec3[];
     private colors: Color[];
+    private indices: number[];
 
     constructor() {
         super();
 
         this.vertexs = [];
         this.colors = [];
+        this.indices = [];
     }
 
-    public render(gl: WebGLRenderingContext | WebGL2RenderingContext, binding: Binding) {
-        // build geometry
-        this.buildGeometry();
+    public render(context: IRenderingContext, binding: Binding) {
+        const { gl, program } = context;
 
-        // binding vertexs
+        // upload worldMatrix
+        const worldMatrix: mat4 = this.worldMatrix;
+        // const worldMatrix: mat4 = mat4.create();
+        mat4.identity(worldMatrix);
+
+        const modelMatrixLocation: WebGLUniformLocation =
+            gl.getUniformLocation(program, "modelMatrix") as WebGLUniformLocation;
+        gl.uniformMatrix4fv(modelMatrixLocation, false, worldMatrix);
+
+        // binding vertex
         const positionBuffer = gl.createBuffer();
-        // const pointData = new Float32Array([
-        //     -1.0,  1.0, 1.0,
-        //      1.0,  1.0, 1.0,
-        //     -1.0, -1.0, 1.0,
-        //   ]);
-        const pointData = this.flatPoints(this.vertexs, Float32Array);
+        const pointData = this.geometric(Float32Array);
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, pointData, gl.STATIC_DRAW);
 
@@ -35,10 +41,18 @@ export class Geometry extends GNode {
         // bind colors
         const colorBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        const colorData = this.flatColors(this.colors, Float32Array);
+        const colorData = this.generateColors(Float32Array);
         gl.bufferData(gl.ARRAY_BUFFER, colorData, gl.STATIC_DRAW);
 
         binding.attachColorBuffer(colorBuffer as WebGLBuffer);
+
+        const offset: number = 0;
+        gl.drawArrays(gl.TRIANGLES, offset, this.indices.length);
+    }
+
+    public clear() {
+        this.vertexs = [];
+        this.colors  = [];
     }
 
     public setColors(colors: Color[]) {
@@ -69,21 +83,34 @@ export class Geometry extends GNode {
         return this.vertexs;
     }
 
-    public flatPoints(points: vec3[], Type: Typed): TypedArray {
-        const cords = points.reduce((acc: number[], vertex: vec3) => {
-            vertex.forEach((i: number) => acc.push(i));
-            return acc;
-        }, []);
-
-        return  new Type(cords);
+    public getIndices(): number[] {
+        return this.indices;
     }
 
-    public flatColors(colors: Color[], Type: Typed): TypedArray {
-        const cords = colors.reduce((acc: number[], color: Color) => {
-            color.toRGB().forEach((i: number) => acc.push(i));
-            return acc;
-        }, []);
-
-        return  new Type(cords);
+    public pushIndices(indices: number[]): void {
+        this.indices.push(...indices);
     }
+
+    public geometric(Type: Typed): TypedArray {
+        const vertexs: vec3[] =  this.getVertexs();
+        const newVertexs: number[] =  [];
+        this.getIndices().forEach((index: number) => {
+          vertexs[index].forEach((i: number) => {
+            newVertexs.push(i);
+          });
+        });
+
+        return  new Type(newVertexs);
+    }
+
+    public generateColors(Type: Typed): TypedArray {
+        const newColors: number[] = [];
+        this.indices.forEach((index: number) => {
+            this.colors[index].toRGB().forEach((i: number) => {
+                newColors.push(i);
+            });
+        });
+        return  new Type(newColors);
+    }
+
 }

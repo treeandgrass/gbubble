@@ -10,7 +10,6 @@ export interface IBindingConfig {
     target: number;
     vertexBuffer: WebGLBuffer;
 }
-
 export type ROOT = string | HTMLCanvasElement | WebGLRenderingContext;
 
 
@@ -45,7 +44,7 @@ export function glClear(gl: WebGLRenderingContext) {
 
 export function createBuffer(gl: WebGLRenderingContext, binding: Float32Array, target: number, drawType: number) {
     const buffer: WebGLBuffer = gl.createBuffer() as WebGLBuffer;
-    gl.bindBuffer(target, buffer);
+    // gl.bindBuffer(target, buffer);
     gl.bufferData(target, binding, drawType);
     return buffer;
 }
@@ -54,9 +53,9 @@ export function attachBuffer(gl: WebGLRenderingContext, program: WebGLProgram, c
     const location: number = gl.getAttribLocation(program, config.location);
     const { buffer, numComponents } = config;
     // bindings
-    gl.bindBuffer(config.target, buffer);
-    gl.vertexAttribPointer(location, numComponents, gl.FLOAT, false, 0, 0);
+    // gl.bindBuffer(config.target, buffer);
     gl.enableVertexAttribArray(location);
+    gl.vertexAttribPointer(location, numComponents, gl.FLOAT, false, 0, 0);
 }
 
 // fetch all attributelocations
@@ -79,7 +78,7 @@ export function glBinding(gl: WebGLRenderingContext, program: WebGLProgram, bind
         if (!location) { throw new Error(`can't find ${key}'s location`); }
 
         gl.bindBuffer(value.target, value.vertexBuffer);
-        gl.vertexAttribPointer(location, value.numComponents, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(location);
+        gl.vertexAttribPointer(location, value.numComponents, gl.FLOAT, false, 0, 0);
     });
 }

@@ -1,6 +1,6 @@
 import { vec3 } from "gl-matrix";
 
-export class Position {
+export class Vector {
     public x: number;
     public y: number;
     public z: number;
