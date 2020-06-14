@@ -11,4 +11,9 @@ export class Plane {
     vec3.set(this.normal, x, y, z);
     this.constant = w;
   }
+
+  // calculate distance between point to plane
+  public distanceToPoint(point: vec3) {
+      return vec3.dot(point, this.normal) + this.constant;
+  }
 }
