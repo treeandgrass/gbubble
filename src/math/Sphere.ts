@@ -1,4 +1,5 @@
 import { vec3 } from "gl-matrix";
+import Plane, { Plane } from "./Plane";
 export class Sphere {
   public center: vec3;
   public radius: number;
@@ -26,5 +27,9 @@ export class Sphere {
     vec3.sub(subVector, sphere.center, this.center);
 
     return vec3.dot(subVector, subVector) <= radiusSum * radiusSum;
+  }
+
+  public intersectsPlane(plane: Plane): boolean {
+    return plane.distanceToPoint(this.center) < this.radius;
   }
 }
