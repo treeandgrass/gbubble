@@ -1,5 +1,5 @@
 import { vec3 } from "gl-matrix";
-import Plane, { Plane } from "./Plane";
+import { Plane } from "./Plane";
 export class Sphere {
   public center: vec3;
   public radius: number;
