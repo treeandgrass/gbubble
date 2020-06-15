@@ -1,5 +1,5 @@
 import { mat4 } from "gl-matrix";
-import { Plane } from "./plane";
+import { Plane } from "./Plane";
 export class Frustum {
   private p0: Plane;
   private p1: Plane;

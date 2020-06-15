@@ -1,5 +1,5 @@
 import { mat4, quat } from "gl-matrix";
-import { clamp } from "./math";
+import { clamp } from "./Math";
 
 // Euler angle
 export class Euler {
