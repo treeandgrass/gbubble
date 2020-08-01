@@ -1,4 +1,4 @@
-import { mat4, quat } from "gl-matrix";
+import { mat4, quat, vec4 } from "gl-matrix";
 import { Euler } from "./Euler";
 
 
@@ -140,3 +140,41 @@ export function setFromEuler(out: quat, euler: Euler) {
     out[2] = outZ;
     out[3] = outW;
 }
+
+export function slerpFlat(src0: vec4, src1: vec4, t: number): vec4 {
+  let x0 = src0[0];
+  let y0 = src0[1];
+  let z0 = src0[2];
+  let w0 = src0[3];
+
+  const x1 = src1[0];
+  const y1 = src1[1];
+  const z1 = src1[2];
+  const w1 = src1[3];
+
+  if (x0 !== x1 || y0 !== y1 || z0 !== z1 || w0 !== w1) {
+    const cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1;
+    const s = 1 - t;
+
+    const direction = cos >= 0 ? 1 : -1;
+    const squareSin = 1 - cos * cos;
+    let at = t;
+    let bt = s;
+    if (squareSin > Number.EPSILON) {
+      const sin = Math.sqrt(squareSin);
+      const angleLength = Math.atan2(sin, direction * cos);
+      at = Math.sin(angleLength * t) / sin;
+      bt = Math.sin(angleLength * s) / sin;
+    }
+
+    const atDir = at * direction;
+    x0 = x0 * bt + x1 * atDir;
+    y0 = y0 * bt + y1 * atDir;
+    z0 = z0 * bt + z1 * atDir;
+    w0 = w0 * bt + w1 * atDir;
+  }
+
+
+  return vec4.fromValues(x0, y0, z0, w0);
+}
+
