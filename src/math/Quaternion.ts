@@ -141,16 +141,16 @@ export function setFromEuler(out: quat, euler: Euler) {
     out[3] = outW;
 }
 
-export function slerpFlat(src0: vec4, src1: vec4, t: number): vec4 {
-  let x0 = src0[0];
-  let y0 = src0[1];
-  let z0 = src0[2];
-  let w0 = src0[3];
+export function slerpFlat(src0: Float32Array, offset0: number, src1: Float32Array, offset1: number, t: number): vec4 {
+  let x0 = src0[offset0];
+  let y0 = src0[offset0 + 1];
+  let z0 = src0[offset0 + 2];
+  let w0 = src0[offset0 + 3];
 
-  const x1 = src1[0];
-  const y1 = src1[1];
-  const z1 = src1[2];
-  const w1 = src1[3];
+  const x1 = src1[offset1 + 0];
+  const y1 = src1[offset1 + 1];
+  const z1 = src1[offset1 + 2];
+  const w1 = src1[offset1 + 3];
 
   if (x0 !== x1 || y0 !== y1 || z0 !== z1 || w0 !== w1) {
     const cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1;
